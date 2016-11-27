@@ -10,8 +10,8 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>Torben Hedstrøm</name>
+        <url></url>
     </organization>
 
     <name>bamboo.trigger.detector</name>
@@ -82,6 +82,11 @@
             <artifactId>gson</artifactId>
             <version>2.2.2-atlassian-1</version>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-bamboo-plugin</artifactId>
+            <version>5.13.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -98,7 +103,7 @@
                     <enableFastdev>false</enableFastdev>
 
                     <!-- See here for an explanation of default instructions: -->
-                    <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
+                    <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-o$f-instructions-in-atlassian-plugins -->
                     <instructions>
                         <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
 
@@ -141,6 +146,27 @@
                     </scannedDependencies>
                     <verbose>false</verbose>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/resources/atlassian-bamboo-plugin-jira-5.13.2.jar</file>
+                            <groupId>com.atlassian.plugins</groupId>
+                            <artifactId>atlassian-bamboo-plugin</artifactId>
+                            <version>5.13.2</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

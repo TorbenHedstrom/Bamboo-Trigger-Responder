@@ -20,7 +20,7 @@
         <context>trigger-extractor</context>
     </web-resource>
 
-    <taskType key="myFirstTask" name="Extract build trigger reason task" class="org.hedstroem.ExtractBuildTriggersTask">
+    <taskType key="triggerDetector" name="Extract build trigger reason task" class="org.hedstroem.ExtractBuildTriggersTask">
         <description>A task that extracts build trigger information'</description>
         <configuration class="org.hedstroem.ExtractBuildTriggersTaskConfig"/>
         <resource type="freemarker" name="view" location="template/viewExtractBuildTriggersTask.ftl"/>

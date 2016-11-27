@@ -18,6 +18,12 @@
 
 <input id="${Manual}" type="radio" name="triggerType" onclick="triggerTypeChanged('${Manual}')"/>
 <label for="${Manual}">${Manual}</label>
+
+<input id="${Jira}" type="radio" name="triggerType" onclick="triggerTypeChanged('${Jira}')"/>
+<label for="${Jira}">${Jira}</label>
+
+<input id="${Other}" type="radio" name="triggerType" onclick="triggerTypeChanged('${Other}')"/>
+<label for="${Other}">${Other}</label>
 [/@ui.bambooSection]
 
 [@ui.bambooSection titleKey='org.hedstroem.trigger.extractor.configure.label.title' ]
@@ -47,6 +53,26 @@
             <td>
                 [@ww.textfield labelKey="org.hedstroem.trigger.extractor.manual.configuration.label.param.name" name="manualTriggerParamName" /]
             [@ww.textfield labelKey="org.hedstroem.trigger.extractor.manual.configuration.label.profiles" name="manualTriggerProfiles" /]
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="${Jira}Block" style="display: none">
+    <table>
+        <tr>
+            <td>
+                [@ww.textfield labelKey="org.hedstroem.trigger.extractor.jira.configuration.label.param.name" name="jiraTriggerParamName" /]
+            [@ww.textfield labelKey="org.hedstroem.trigger.extractor.jira.configuration.label.profiles" name="jiraTriggerProfiles" /]
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="${Other}Block" style="display: none">
+    <table>
+        <tr>
+            <td>
+                [@ww.textfield labelKey="org.hedstroem.trigger.extractor.other.configuration.label.param.name" name="otherTriggerParamName" /]
+            [@ww.textfield labelKey="org.hedstroem.trigger.extractor.other.configuration.label.profiles" name="otherTriggerProfiles" /]
             </td>
         </tr>
     </table>

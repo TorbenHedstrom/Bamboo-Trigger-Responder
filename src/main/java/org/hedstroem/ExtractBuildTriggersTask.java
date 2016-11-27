@@ -2,6 +2,7 @@ package org.hedstroem;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.plugins.jira.release.JIRAReleaseTriggerReason;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.trigger.CodeChangedTriggerReason;
 import com.atlassian.bamboo.v2.build.trigger.ManualBuildTriggerReason;
@@ -34,18 +35,24 @@ public class ExtractBuildTriggersTask implements TaskType {
      * @throws TaskException
      */
     @NotNull
-    @Override
     public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
         final BuildLogger buildLogger = taskContext.getBuildLogger();
         buildLogger.addBuildLogEntry("Extracting trigger information, and setting parameters accordingly.");
 
         TriggerReason triggerReason = taskContext.getBuildContext().getTriggerReason();
-        buildLogger.addBuildLogEntry(String.format("Build trigger identified as %s", triggerReason.getName()));
 
-        String triggerReasonParameter = triggerReason.getName().replaceAll(" ", "-");
+        String triggerReasonName;
 
-        buildLogger.addBuildLogEntry(String.format("Setting variable %s to %s", ExtractBuildTriggersTaskConfig.BAMBOO_TRIGGER_TYPE_KEY, triggerReasonParameter));
-        customVariableContext.addCustomData(ExtractBuildTriggersTaskConfig.BAMBOO_TRIGGER_TYPE_KEY, triggerReasonParameter);
+        try {
+            triggerReasonName = triggerReason.getName();
+            buildLogger.addBuildLogEntry(String.format("Build trigger identified as %s",  triggerReasonName));
+            String triggerReasonParameter = triggerReason.getName().replaceAll(" ", "-");
+            buildLogger.addBuildLogEntry(String.format("Setting variable %s to %s", ExtractBuildTriggersTaskConfig.BAMBOO_TRIGGER_TYPE_KEY, triggerReasonParameter));
+            customVariableContext.addCustomData(ExtractBuildTriggersTaskConfig.BAMBOO_TRIGGER_TYPE_KEY, triggerReasonParameter);
+        } catch (Exception ex) {
+            buildLogger.addBuildLogEntry("Build trigger cannot be identified...");
+        }
+
         ConfigurationMap configurationMap = taskContext.getConfigurationMap();
 
         if (triggerReason instanceof ManualBuildTriggerReason) {
@@ -64,8 +71,14 @@ public class ExtractBuildTriggersTask implements TaskType {
                 buildLogger.addBuildLogEntry(String.format("Setting build trigger variable with name %s to %s", scheduledParamName, scheduledParamValue));
                 customVariableContext.addCustomData(scheduledParamName, scheduledParamValue);
             }
-        } else if (triggerReason instanceof TriggerReason) {
-            System.out.println("JIRA trigger reason");
+        } else if (triggerReason instanceof JIRAReleaseTriggerReason) {
+            String jiraParamName = configurationMap.get(ExtractBuildTriggersTaskConfig.JIRA_TRIGGER_PARAM_NAME);
+            String jiraParamValue = configurationMap.get(ExtractBuildTriggersTaskConfig.JIRA_TRIGGER_PARAM_VALUE);
+
+            if (jiraParamName!= null && jiraParamValue != null) {
+                buildLogger.addBuildLogEntry(String.format("Setting build trigger variable with name %s to %s", jiraParamName, jiraParamValue));
+                customVariableContext.addCustomData(jiraParamName, jiraParamValue);
+            }
         } else if (triggerReason instanceof CodeChangedTriggerReason) {
             String commitParamName = configurationMap.get(ExtractBuildTriggersTaskConfig.COMMIT_TRIGGER_PARAM_NAME);
             String commitParamValue = configurationMap.get(ExtractBuildTriggersTaskConfig.COMMIT_TRIGGER_PARAM_VALUE);
@@ -74,9 +87,16 @@ public class ExtractBuildTriggersTask implements TaskType {
                 buildLogger.addBuildLogEntry(String.format("Setting build trigger variable with name %s to %s", commitParamName, commitParamValue));
                 customVariableContext.addCustomData(commitParamName, commitParamValue);
             }
+        } else {
+            String otherParamName = configurationMap.get(ExtractBuildTriggersTaskConfig.OTHER_TRIGGER_PARAM_NAME);
+            String otherParamValue = configurationMap.get(ExtractBuildTriggersTaskConfig.OTHER_TRIGGER_PARAM_VALUE);
+
+            if (otherParamName != null && otherParamValue != null) {
+                buildLogger.addBuildLogEntry(String.format("Setting build trigger variable with name %s to %s", otherParamName, otherParamValue));
+                customVariableContext.addCustomData(otherParamName, otherParamValue);
+            }
         }
+
         return TaskResultBuilder.newBuilder(taskContext).success().build();
-
-
     }
 }
