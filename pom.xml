@@ -11,10 +11,10 @@
 
     <organization>
         <name>Torben Hedstrøm</name>
-        <url></url>
+        <url>https://www.linkedin.com/in/torben-hedstrøm-0993277/</url>
     </organization>
 
-    <name>bamboo.trigger.detector</name>
+    <name>Bamboo-Triggertrigger-Detector</name>
     <description>This is the org.hedstrom:bamboo.trigger.detector plugin for Atlassian Bamboo.</description>
     <packaging>atlassian-plugin</packaging>
 
